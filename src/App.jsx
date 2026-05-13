@@ -22,6 +22,7 @@ import {
   Profile,
 } from './pages/Student/StudentPages';
 import Exams from './pages/Student/StudentPages';
+import { StaffDirectory } from './pages/Student/StaffDirectory';
 
 // ── Admin Pages ──────────────────────────────────────────────────
 import {
@@ -29,6 +30,7 @@ import {
   AdminApproveEvents,
   AdminTimetable,
   AdminSyllabus,
+  AdminStudentsList,
 } from './pages/Admin/AdminPages';
 import AddClub from "./pages/Admin/AddClub";
 
@@ -71,6 +73,7 @@ function App() {
               <Route path="my-registrations" element={<MyRegistrations />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="staff" element={<StaffDirectory />} />
             </Route>
 
             {/* ── Admin ── */}
@@ -81,7 +84,8 @@ function App() {
               <Route path="timetable" element={<AdminTimetable />} />
               <Route path="syllabus" element={<AdminSyllabus />} />
               <Route path="exams" element={<ExamUpload />} />
-                <Route path="add-club" element={<AddClub />} />
+              <Route path="add-club" element={<AddClub />} />
+              <Route path="students" element={<AdminStudentsList />} />
             </Route>
 
             {/* ── Club ── */}

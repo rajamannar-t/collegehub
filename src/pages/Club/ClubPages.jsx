@@ -11,6 +11,7 @@ import {
   addDoc,
   getDocs,
   updateDoc,
+  deleteDoc,
   serverTimestamp,
   doc
 } from "firebase/firestore";
@@ -45,7 +46,7 @@ export const ClubDashboard = () => {
       const snap = await getDocs(collection(db, "club_members"));
 
       const data = snap.docs
-        .map(doc => doc.data())
+        .map(doc => ({ id: doc.id, ...doc.data() }))
         .filter(m => m.clubId === profile?.clubId);
 
       setMembers(data);
@@ -100,9 +101,20 @@ export const ClubDashboard = () => {
     setRequests(prev => prev.filter(r => r.id !== req.id));
   };
 
-  return (
-    <div>
+  // 🗑️ REMOVE MEMBER
+  const handleRemoveMember = async (memberId) => {
+    if (window.confirm("Are you sure you want to completely remove this member?")) {
+      try {
+        await deleteDoc(doc(db, "club_members", memberId));
+        setMembers(prev => prev.filter(m => m.id !== memberId));
+      } catch (err) {
+        console.error("Error removing member:", err);
+      }
+    }
+  };
 
+  return (
+    <div className="fade-in">
       <PageHeader
         title="Club Dashboard"
         subtitle={`${profile?.clubName || 'Club'} · ${profile?.name}`}
@@ -117,62 +129,85 @@ export const ClubDashboard = () => {
         }
       />
 
+      {/* KPI STATS */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "32px" }}>
+        <div style={{ padding: "20px", background: "linear-gradient(135deg, var(--primary), var(--primary-light))", borderRadius: "16px", color: "white", boxShadow: "0 4px 12px rgba(79,70,229,0.3)" }}>
+           <h2 style={{ fontSize: "32px", margin: "0 0 4px 0" }}>{members.length}</h2>
+           <p style={{ margin: 0, opacity: 0.9, fontWeight: 500 }}>Active Members</p>
+        </div>
+        <div style={{ padding: "20px", background: "var(--bg-1)", borderRadius: "16px", border: "1px solid var(--border)", boxShadow: "0 2px 8px rgba(0,0,0,0.03)" }}>
+           <h2 style={{ fontSize: "32px", margin: "0 0 4px 0", color: "var(--text-1)" }}>{events.length}</h2>
+           <p style={{ margin: 0, color: "var(--text-2)", fontWeight: 500 }}>Upcoming Events</p>
+        </div>
+        <div style={{ padding: "20px", background: "var(--bg-1)", borderRadius: "16px", border: "1px solid var(--border)", boxShadow: "0 2px 8px rgba(0,0,0,0.03)" }}>
+           <h2 style={{ fontSize: "32px", margin: "0 0 4px 0", color: "var(--text-1)" }}>{requests.length}</h2>
+           <p style={{ margin: 0, color: "var(--text-2)", fontWeight: 500 }}>Pending Requests</p>
+        </div>
+      </div>
+
       {/* EVENTS */}
       <SectionTitle>My Events</SectionTitle>
-
-      {events.map(ev => (
-        <div key={ev.id} className="list-item">
-          <div className="list-main">
-            <div className="list-title">{ev.title}</div>
-            <div className="list-sub">{ev.category} · {ev.venue}</div>
-          </div>
+      {events.length === 0 ? <p style={{color: "var(--text-3)", marginBottom: "32px"}}>No events posted yet.</p> : (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "16px", marginBottom: "32px" }}>
+          {events.map(ev => (
+            <div key={ev.id} style={{ background: "var(--bg-1)", padding: "20px", borderRadius: "12px", border: "1px solid var(--border)" }}>
+              <div style={{ fontWeight: 600, fontSize: "18px", color: "var(--text-1)", marginBottom: "4px" }}>{ev.title}</div>
+              <div style={{ fontSize: "14px", color: "var(--text-2)", marginBottom: "16px" }}>{ev.category} · {ev.venue}</div>
+              <button 
+                className="btn btn-outline btn-sm" 
+                style={{ width: "100%" }}
+                onClick={() => navigate(`/club/registrations/${encodeURIComponent(ev.title)}`)}
+              >
+                View Registrations
+              </button>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
+
+      {/* JOIN REQUESTS */}
+      <SectionTitle>Join Requests</SectionTitle>
+      {requests.length === 0 ? <p style={{color: "var(--text-3)", marginBottom: "32px"}}>No pending join requests.</p> : (
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "32px" }}>
+          {requests.map(req => (
+            <div key={req.id} className="list-item" style={{ background: "var(--bg-1)" }}>
+              <div className="list-main">
+                <div className="list-title">{req.userName}</div>
+                <div className="list-sub">{req.branch} · Sem {req.semester}</div>
+              </div>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <button className="btn btn-primary btn-sm" onClick={() => handleApprove(req)}>Approve</button>
+                <button className="btn btn-sm" style={{ background: "var(--danger, #ef4444)", color: "white" }} onClick={() => handleReject(req)}>Reject</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* MEMBERS */}
       <SectionTitle>Club Members</SectionTitle>
-
-      {members.map((m, i) => (
-        <div key={i} className="list-item">
-          <div className="list-main">
-            <div className="list-title">{m.userName}</div>
-            <div className="list-sub">{m.role}</div>
-          </div>
-        </div>
-      ))}
-
-      {/* REQUESTS */}
-      <SectionTitle>Join Requests</SectionTitle>
-
-      {requests.map(req => (
-        <div key={req.id} className="list-item">
-
-          <div className="list-main">
-            <div className="list-title">{req.userName}</div>
-            <div className="list-sub">
-              {req.branch} · Sem {req.semester}
+      {members.length === 0 ? <p style={{color: "var(--text-3)"}}>No active members.</p> : (
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {members.map((m) => (
+            <div key={m.id} className="list-item" style={{ background: "var(--bg-1)" }}>
+              <div className="list-main">
+                <div className="list-title" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span style={{ background: "var(--bg-3)", padding: "4px 8px", borderRadius: "50%", fontSize: "14px" }}>👤</span>
+                  {m.userName}
+                </div>
+                <div className="list-sub" style={{ marginLeft: "40px" }}>{m.role === 'member' ? 'Member' : m.role}</div>
+              </div>
+              <button 
+                className="btn btn-outline btn-sm" 
+                style={{ color: "var(--danger, #ef4444)", borderColor: "var(--danger, #ef4444)" }}
+                onClick={() => handleRemoveMember(m.id)}
+              >
+                Remove
+              </button>
             </div>
-          </div>
-
-          <div style={{ display: "flex", gap: 10 }}>
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={() => handleApprove(req)}
-            >
-              Approve
-            </button>
-
-            <button
-              className="btn btn-sm"
-              style={{ background: "red", color: "white" }}
-              onClick={() => handleReject(req)}
-            >
-              Reject
-            </button>
-          </div>
-
+          ))}
         </div>
-      ))}
+      )}
 
     </div>
   );

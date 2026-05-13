@@ -9,6 +9,7 @@ import {
 import { db } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 import { PageHeader } from "../components/Layout";
+import PublicNavbar from "../components/PublicNavbar";
 
 export default function Clubs() {
 
@@ -94,27 +95,32 @@ export default function Clubs() {
   };
 
   return (
-  <div style={{ padding: 20 }}>
+    <div className="landing-page animate-fade" style={{ minHeight: '100vh', background: 'var(--bg)' }}>
+      <PublicNavbar />
+      
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 20px' }}>
+        <PageHeader 
+          title="Clubs & Communities" 
+          subtitle="Explore and join vibrant clubs in your college"
+        />
 
-    <PageHeader 
-      title="Clubs" 
-      subtitle="Explore and join clubs in your college"
-    />
-
-    {/* EMPTY STATE */}
-    {clubs.length === 0 && (
-      <div className="form-card" style={{ textAlign: "center" }}>
-        No clubs available
-      </div>
-    )}
+        {/* EMPTY STATE */}
+        {clubs.length === 0 && (
+          <div className="form-card animate-slide delay-1" style={{ textAlign: "center", margin: "40px auto", maxWidth: 600, padding: 60 }}>
+            <div style={{ fontSize: 60, marginBottom: 20 }}>🔭</div>
+            <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 10 }}>No Clubs Found</h3>
+            <p style={{ color: 'var(--text-2)' }}>It looks like there are no active clubs right now. Keep an eye out for interesting new communities coming soon!</p>
+          </div>
+        )}
 
     {/* CLUB GRID */}
     <div
+      className="animate-slide delay-2"
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-        gap: 20,
-        marginTop: 20
+        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+        gap: 24,
+        marginTop: 30
       }}
     >
 
@@ -125,43 +131,51 @@ export default function Clubs() {
         return (
           <div
             key={club.id}
-            className="form-card"
+            className="role-card"
             style={{
-              padding: 16,
+              padding: 24,
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              minHeight: 180
+              minHeight: 220,
+              background: "var(--surface)"
             }}
           >
 
             <div>
-              <div style={{ fontSize: 18, fontWeight: 600 }}>
-                {club.name}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(79, 70, 229, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>
+                  {club.icon || "✨"}
+                </div>
+                <div>
+                  <div style={{ fontSize: 18, fontWeight: 800 }}>
+                    {club.name}
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>
+                    {club.department}
+                  </div>
+                </div>
               </div>
 
-              <div style={{ color: "#666", marginTop: 6 }}>
+              <div style={{ color: "var(--text-2)", fontSize: 14, lineHeight: 1.6 }}>
                 {club.description}
-              </div>
-
-              <div style={{ marginTop: 8, fontSize: 13 }}>
-                Department: <b>{club.department}</b>
               </div>
             </div>
 
-            <div style={{ marginTop: 15 }}>
+            <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
               {myReq ? (
-                <button className="btn btn-sm">
-                  {myReq.status === "pending" && "⏳ Pending"}
-                  {myReq.status === "approved" && "✅ Joined"}
-                  {myReq.status === "rejected" && "❌ Rejected"}
-                </button>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontWeight: 600, fontSize: 13, color: myReq.status === 'pending' ? 'var(--amber)' : myReq.status === 'approved' ? 'var(--green)' : 'var(--red)' }}>
+                  {myReq.status === "pending" && "⏳ Request Pending"}
+                  {myReq.status === "approved" && "✅ Member"}
+                  {myReq.status === "rejected" && "❌ Request Rejected"}
+                </div>
               ) : (
                 <button
-                  className="btn btn-primary btn-sm"
+                  className="btn btn-primary"
+                  style={{ width: '100%', padding: 12, fontWeight: 600 }}
                   onClick={() => handleJoin(club)}
                 >
-                  Join Club
+                  Request to Join
                 </button>
               )}
             </div>
@@ -172,6 +186,7 @@ export default function Clubs() {
 
     </div>
 
-  </div>
-);
+      </div>
+    </div>
+  );
 }

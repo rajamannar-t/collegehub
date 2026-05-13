@@ -67,3 +67,7 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Custom Secure Keys
+serviceAccountKey.json
+.env*

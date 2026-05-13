@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { COLLEGE_DOMAIN } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { BRANCH_OPTIONS, SEMESTER_OPTIONS } from '../../data/mockData';
+import PublicNavbar from '../../components/PublicNavbar';
+import AnimatedBackground from '../../components/AnimatedBackground';
 
 import {
   signInWithEmailAndPassword,
@@ -31,6 +33,8 @@ const Login = () => {
   const [name, setName] = useState('');
   const [branch, setBranch] = useState('CSE');
   const [semester, setSemester] = useState(5);
+  const [mobile, setMobile] = useState('');
+  const [year, setYear] = useState('1st Year');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -123,7 +127,9 @@ const Login = () => {
         email,
         role: userRole,
         branch,
-        semester
+        semester,
+        mobile,
+        year
       });
 
       toast.success("Account created!");
@@ -146,8 +152,12 @@ const Login = () => {
   const isStudent = role === 'student';
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative' }}>
+      <AnimatedBackground />
+      <PublicNavbar />
+      
+      <div className="auth-page animate-fade" style={{ background: 'transparent', flex: 1, minHeight: 'auto', paddingTop: 60, paddingBottom: 60, alignItems: 'flex-start' }}>
+        <div className="auth-card animate-slide delay-1">
 
         <div className="auth-logo">
           College<span>Hub</span>
@@ -175,10 +185,28 @@ const Login = () => {
         <form onSubmit={tab === 'register' ? handleRegister : handleLogin}>
 
           {tab === 'register' && (
-            <div className="form-row">
-              <label className="form-label">Full Name</label>
-              <input className="form-input" value={name} onChange={e => setName(e.target.value)} required />
-            </div>
+            <>
+              <div className="form-row animate-fade">
+                <label className="form-label">Full Name</label>
+                <input className="form-input" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. John Doe" required />
+              </div>
+              
+              <div className="form-row-2 animate-fade">
+                <div>
+                  <label className="form-label">Mobile Number</label>
+                  <input className="form-input" type="tel" value={mobile} onChange={e => setMobile(e.target.value)} placeholder="e.g. 9876543210" required />
+                </div>
+                <div>
+                  <label className="form-label">Year</label>
+                  <select className="form-select" value={year} onChange={e => setYear(e.target.value)}>
+                    <option>1st Year</option>
+                    <option>2nd Year</option>
+                    <option>3rd Year</option>
+                    <option>4th Year</option>
+                  </select>
+                </div>
+              </div>
+            </>
           )}
 
           <div className="form-row">
@@ -187,13 +215,19 @@ const Login = () => {
           </div>
 
           {tab === 'register' && (
-            <div className="form-row-2">
-              <select value={branch} onChange={e => setBranch(e.target.value)}>
-                {BRANCH_OPTIONS.map(b => <option key={b}>{b}</option>)}
-              </select>
-              <select value={semester} onChange={e => setSemester(Number(e.target.value))}>
-                {SEMESTER_OPTIONS.map(s => <option key={s}>{s}</option>)}
-              </select>
+            <div className="form-row-2 animate-fade">
+              <div>
+                <label className="form-label">Branch</label>
+                <select className="form-select" value={branch} onChange={e => setBranch(e.target.value)}>
+                  {BRANCH_OPTIONS.map(b => <option key={b}>{b}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="form-label">Semester</label>
+                <select className="form-select" value={semester} onChange={e => setSemester(Number(e.target.value))}>
+                  {SEMESTER_OPTIONS.map(s => <option key={s}>{s}</option>)}
+                </select>
+              </div>
             </div>
           )}
 
@@ -242,7 +276,12 @@ const Login = () => {
 
         </form>
 
+        <div className="auth-back" style={{ marginTop: 24 }}>
+          <Link to="/" style={{ fontWeight: 600, color: 'var(--text-3)' }}>← Back to home</Link>
+        </div>
+
       </div>
+    </div>
     </div>
   );
 };

@@ -1,12 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import PublicNavbar from '../../components/PublicNavbar';
+import AnimatedBackground from '../../components/AnimatedBackground';
 
 const Landing = () => {
   const navigate = useNavigate();
 
   const features = [
     { icon: '📢', name: 'Event Aggregator',   desc: 'All college events in one feed — no more scattered WhatsApp announcements.' },
-    { icon: '✅', name: 'Approval Workflow',   desc: 'Club events go through management review before reaching students.' },
+    { icon: '✅', name: 'Approval Workflow',   desc: 'Club events go through HOD review before reaching students.' },
     { icon: '🔔', name: 'Smart Reminders',     desc: '15-min event alerts + 1-week and 3-day exam notifications automatically.' },
     { icon: '📅', name: 'Live Timetable',      desc: 'Branch and semester-specific timetables always up to date.' },
     { icon: '📚', name: 'Syllabus Access',     desc: 'Download subject-wise PDFs anytime from any device.' },
@@ -14,42 +16,32 @@ const Landing = () => {
   ];
 
   return (
-    <div className="landing-page">
-      {/* Topbar */}
-      <div className="topbar">
-        <div className="topbar-logo">College<span>Hub</span></div>
-        <div className="topbar-spacer" />
-        <div className="topbar-right">
-          <button className="btn btn-ghost btn-sm" onClick={() => navigate('/login/student')}>Student login</button>
-          <button className="btn btn-primary btn-sm" onClick={() => navigate('/login/admin')}>Admin login</button>
-        </div>
-      </div>
+    <div className="landing-page animate-fade">
+      <AnimatedBackground />
+      <PublicNavbar />
 
       {/* Hero */}
-      <div className="landing-hero">
-        <div className="landing-badge">✦ Version 2.0 — Web Platform</div>
+      <div className="landing-hero animate-slide">
+        <div className="landing-badge">✦ Version 2.0 — Premium Experience</div>
         <h1 className="landing-h1">
           Your college,<br />
-          <em>all in one place</em>
+          <em>elevated</em>
         </h1>
-        <p className="landing-p">
-          CollegeHub replaces scattered WhatsApp groups and Instagram posts with a single, organised, role-aware platform for events, academics and notifications.
+        <p className="landing-p animate-slide delay-1">
+          CollegeHub replaces scattered WhatsApp groups and Instagram posts with a single, organised, premium platform for events, academics and notifications.
         </p>
 
-        <div className="landing-btns">
-          <button className="btn btn-primary btn-lg" onClick={() => navigate('/login/student')}>
-            Student login →
+        <div className="landing-btns animate-slide delay-2">
+          <button className="btn btn-primary btn-lg" onClick={() => navigate('/login/student')} style={{ padding: '14px 28px', fontSize: '15px' }}>
+            Get Started →
           </button>
-          <button className="btn btn-secondary btn-lg" onClick={() => navigate('/login/admin')}>
-            Admin / Club login
-          </button>
-
-          {/* 🔥 ADDED BUTTON */}
+          
           <button 
             className="btn btn-secondary btn-lg"
             onClick={() => navigate('/clubs')}
+            style={{ padding: '14px 28px', fontSize: '15px', background: 'var(--surface)', border: '1px solid var(--border)' }}
           >
-            View Clubs →
+            Explore Clubs
           </button>
         </div>
 
@@ -75,39 +67,36 @@ const Landing = () => {
 
       {/* Role Cards */}
       <div className="role-cards-section">
-        <h2 className="role-cards-title">Three roles, one platform</h2>
+        <h2 className="role-cards-title animate-slide delay-1">Three roles, one platform</h2>
 
-        <div className="role-cards">
+        <div className="role-cards animate-slide delay-2">
 
           <div className="role-card" onClick={() => navigate('/login/admin')}>
-            <div className="role-card-icon">🏫</div>
-            <div className="role-card-title">College Management</div>
-            <div className="role-card-desc">Post events, approve club submissions, upload timetables and syllabus, send targeted notifications.</div>
-            <div className="role-card-cta">Login as Management →</div>
+            <div className="role-card-icon">🏛️</div>
+            <div className="role-card-title">Head of Department</div>
+            <div className="role-card-desc">Approve events, manage clubs, and distribute syllabus centrally.</div>
+            <div className="role-card-cta">HOD Panel</div>
           </div>
 
           <div className="role-card" onClick={() => navigate('/login/club')}>
             <div className="role-card-icon">🎯</div>
-            <div className="role-card-title">Club President</div>
-            <div className="role-card-desc">Submit club events for approval, track registration counts, view who is attending your events.</div>
-            <div className="role-card-cta">Login as Club President →</div>
+            <div className="role-card-title">Club Presidents</div>
+            <div className="role-card-desc">Track registrations and publish events to all students.</div>
+            <div className="role-card-cta">Club Dashboard</div>
           </div>
 
           <div className="role-card" onClick={() => navigate('/login/student')}>
             <div className="role-card-icon">🎓</div>
-            <div className="role-card-title">Student</div>
-            <div className="role-card-desc">Browse events, register with one click, view your timetable, download syllabus and get exam reminders.</div>
-            <div className="role-card-cta">Login as Student →</div>
+            <div className="role-card-title">Students</div>
+            <div className="role-card-desc">Get your timetable, explore clubs, and never miss an event.</div>
+            <div className="role-card-cta">Student Hub</div>
           </div>
 
-          {/* 🔥 ADDED CLUBS CARD */}
           <div className="role-card" onClick={() => navigate('/clubs')}>
-            <div className="role-card-icon">📚</div>
-            <div className="role-card-title">Clubs</div>
-            <div className="role-card-desc">
-              Explore all clubs in the college, view details and join your favorite clubs.
-            </div>
-            <div className="role-card-cta">View Clubs →</div>
+            <div className="role-card-icon">✨</div>
+            <div className="role-card-title">Explore Clubs</div>
+            <div className="role-card-desc">Join diverse communities and request badges for entry.</div>
+            <div className="role-card-cta">View Collection</div>
           </div>
 
         </div>

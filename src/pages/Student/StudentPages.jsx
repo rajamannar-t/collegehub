@@ -310,20 +310,31 @@ export const MyRegistrations = () => {
           <div className="section-title">Upcoming</div>
 
           {upcoming.map(r => (
-            <div key={r.id} className="list-item">
-              <div className="list-icon">🎟</div>
-
-              <div className="list-main">
-                <div className="list-title">
-                  {r.eventName || r.title || 'Event'}
-                </div>
-                <div className="list-sub">
-                  {r.date || ''} {r.venue ? `· ${r.venue}` : ''}
-                </div>
+            <div key={r.id} className="ticket-card animate-slide">
+              <div className="ticket-stub">
+                <div style={{ fontSize: 32, marginBottom: 8 }}>🎟️</div>
+                <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--primary)', fontWeight: 800 }}>Admit One</div>
+                <div style={{ fontSize: 9, marginTop: 4, opacity: 0.6 }}>#{r.id.slice(0,6).toUpperCase()}</div>
               </div>
 
-              {/* ✅ FIXED */}
-              <StatusPill status={getEventStatus(r)} />
+              <div className="ticket-main">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                  <div>
+                    <div className="list-title" style={{ fontSize: 18, fontWeight: 800 }}>
+                      {r.eventName || r.title || 'Event'}
+                    </div>
+                    <div style={{ color: 'var(--text-2)', fontSize: 13, marginTop: 4, display: 'flex', gap: 12 }}>
+                      <span>📅 {r.date || 'TBA'}</span> 
+                      {r.venue && <span>📍 {r.venue}</span>}
+                    </div>
+                  </div>
+                  <StatusPill status={getEventStatus(r)} />
+                </div>
+                <div style={{ borderTop: '1px dashed var(--border)', paddingTop: 12, marginTop: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 11, color: 'var(--text-3)' }}>Holder: {profile?.name}</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--primary)' }}>Digital Pass Ready</span>
+                </div>
+              </div>
             </div>
           ))}
         </>
@@ -335,18 +346,25 @@ export const MyRegistrations = () => {
           <div className="section-title">Past</div>
 
           {past.map(r => (
-            <div key={r.id} className="list-item">
-              <div className="list-icon">🏆</div>
-
-              <div className="list-main">
-                <div className="list-title">
-                  {r.eventName || r.title || 'Event'}
-                </div>
-                <div className="list-sub">{r.date || ''}</div>
+            <div key={r.id} className="ticket-card animate-slide" style={{ opacity: 0.7 }}>
+              <div className="ticket-stub" style={{ background: '#f8fafc', borderRightColor: '#e2e8f0' }}>
+                <div style={{ fontSize: 32, marginBottom: 8, filter: 'grayscale(1)' }}>🏆</div>
+                <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text-3)', fontWeight: 800 }}>Archived</div>
               </div>
 
-              {/* ✅ FIXED */}
-              <StatusPill status={getEventStatus(r)} />
+              <div className="ticket-main">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                  <div>
+                    <div className="list-title" style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-2)' }}>
+                      {r.eventName || r.title || 'Event'}
+                    </div>
+                    <div style={{ color: 'var(--text-3)', fontSize: 13, marginTop: 4 }}>
+                      <span>📅 {r.date || 'Concluded'}</span> 
+                    </div>
+                  </div>
+                  <StatusPill status={getEventStatus(r)} />
+                </div>
+              </div>
             </div>
           ))}
         </>
@@ -450,7 +468,9 @@ export const Profile = () => {
               <select
                 className="form-select"
                 value={branch}
+                disabled
                 onChange={e => setBranch(e.target.value)}
+                style={{ opacity: 0.6, cursor: 'not-allowed' }}
               >
                 {BRANCH_OPTIONS.map(b => <option key={b}>{b}</option>)}
               </select>

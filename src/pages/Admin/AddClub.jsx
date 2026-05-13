@@ -2,24 +2,26 @@ import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../firebase";
 import { PageHeader } from "../../components/Layout";
+import { useAuth } from "../../context/AuthContext";
 
 export default function AddClub() {
-
+  const { profile } = useAuth();
+  
   const [form, setForm] = useState({
     name: "",
-    description: "",
-    department: ""
+    description: ""
   });
 
   const handleAdd = async () => {
 
-    if (!form.name || !form.description || !form.department) {
+    if (!form.name || !form.description || !profile?.branch) {
       alert("Fill all fields");
       return;
     }
 
     await addDoc(collection(db, "clubs"), {
       ...form,
+      department: profile.branch, // ✅ rigidly assigned to HOD's branch
       createdAt: Date.now()
     });
 
@@ -27,8 +29,7 @@ export default function AddClub() {
 
     setForm({
       name: "",
-      description: "",
-      department: ""
+      description: ""
     });
   };
 
@@ -64,24 +65,16 @@ export default function AddClub() {
           />
         </div>
 
-        {/* Department */}
+        {/* Department (READ ONLY FOR HOD) */}
         <div className="form-row">
-          <label className="form-label">Department</label>
+          <label className="form-label">Department (HOD Locked)</label>
           <select
             className="form-select"
-            value={form.department}
-            onChange={e => setForm({ ...form, department: e.target.value })}
+            value={profile?.branch || ""}
+            disabled
+            style={{ opacity: 0.6, cursor: 'not-allowed' }}
           >
-            <option value="">Select</option>
-            <option>CSE</option>
-            <option>ECE</option>
-            <option>EEE</option>
-            <option>MECH</option>
-            <option>CIVIL</option>
-            <option>IT</option>
-            <option>AI</option>
-            <option>AIML</option>
-            <option>DS</option>
+            <option value={profile?.branch || ""}>{profile?.branch || "Loading..."}</option>
           </select>
         </div>
 

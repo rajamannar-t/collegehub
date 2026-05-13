@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { Chatbot } from './Chatbot';
 
 // ─── Topbar ──────────────────────────────────────────────────────
 export const Topbar = () => {
@@ -20,7 +21,7 @@ export const Topbar = () => {
 
   const roleLabel = {
     student:       'Student',
-    management:    'Management',
+    management:    'Head of Department',
     club_president:'Club President',
   };
 
@@ -84,6 +85,7 @@ const STUDENT_NAV = [
   { id: 'syllabus',      label: 'Syllabus',         icon: '📚', path: '/syllabus' },
   { id: 'exams',         label: 'Exam Schedule',    icon: '📝', path: '/exams' },
   { id: 'clubs', label: 'Clubs', icon: '🏫', path: '/clubs' },
+  { id: 'staff', label: 'Staff Directory', icon: '👨‍🏫', path: '/staff' },
   { id: 'my-regs',       label: 'My Registrations', icon: '✅', path: '/my-registrations' },
   { id: 'notifications', label: 'Notifications',    icon: '🔔', path: '/notifications', badge: 3 },
   { id: 'profile',       label: 'Profile',          icon: '👤', path: '/profile' },
@@ -97,8 +99,7 @@ const ADMIN_NAV = [
   { id: 'syllabus',      label: 'Syllabus',         icon: '📚', path: '/admin/syllabus' },
   { id: 'exams',         label: 'Exam Schedule',    icon: '📝', path: '/admin/exams' },
   { id: 'add-club', label: 'Add Club', icon: '🏫', path: '/admin/add-club' },
-  { id: 'badges',        label: 'Badge Requests',   icon: '🏅', path: '/admin/badge-requests', badge: 2 },
-   
+  { id: 'students', label: 'Students List', icon: '👨‍🎓', path: '/admin/students' },
 ];
 
 const CLUB_NAV = [
@@ -120,7 +121,7 @@ export const Sidebar = () => {
                  : profile.role === 'club_president'  ? CLUB_NAV
                  : STUDENT_NAV;
 
-  const sectionLabel = profile.role === 'management'     ? 'Management'
+  const sectionLabel = profile.role === 'management'     ? 'Head of Department'
                      : profile.role === 'club_president'  ? 'Club Portal'
                      : 'Student';
 
@@ -167,6 +168,7 @@ export const AppLayout = () => (
         <Outlet />
       </div>
     </div>
+    <Chatbot />
   </div>
 );
 
